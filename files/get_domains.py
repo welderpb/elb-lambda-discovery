@@ -2,7 +2,7 @@ import aws
 import logging
 import os
 import json
-import request
+import urllib3
 
 TAG     = os.getenv('SKIP_TAG')
 REGIONS = os.getenv('REGIONS')
@@ -22,11 +22,13 @@ def handler(event=None, context=None):
     :return:
     """
     regions = json.loads(REGIONS)
+    http = urllib3.PoolManager()
+
     for region in regions:
         albs = get_elb_data(region)
         data = prepare_post_data(albs, region)
-        req  = requests.post(API_URL, json=data)
-        logging.info(req.status_code)
+        req  = http.request('POST', API_URL, body=json.dumps(data), headers = {'Content-Type': 'application/json'})
+        logging.info(req.status)
 
 def get_elb_data(region):
     """

@@ -17,12 +17,12 @@ def get_load_balancers(elb_client, skip_tag, types):
 
     elb_arns = [] # List to hold the elastic load balancers ARNs
 
-    for i in elb_response.get('LoadBalancers'):
-        if i['Type'] in types:
-            elb_arns.append(i['LoadBalancerArn'])
+    for l in elb_response.get('LoadBalancers'):
+        if l['Type'] in types:
+            elb_arns.append({'arn': l['LoadBalancerArn'],'scheme': l['Scheme']})
    
     for elb in elb_arns:
-        tags = elb_client.describe_tags(ResourceArns=[elb])
+        tags = elb_client.describe_tags(ResourceArns=[elb['arn']])
         for tag in tags.get('TagDescriptions')[0]['Tags']:
             if tag['Key'] == skip_tag:
                 elb_arns.remove(elb)
@@ -42,7 +42,7 @@ def get_listeners(elb_client, alb_arn):
 
     for l in elb_response.get('Listeners'):
         if l['Protocol'] == 'HTTPS':
-            listeners.add({l['ListenerArn']: {'Port': l['Port']}})
+            listeners.append({'arn': l['ListenerArn'], 'port': l['Port']})
 
     return listeners
 
@@ -60,6 +60,6 @@ def get_hostheaders(elb_client, listener_arn):
         for cond in r['Conditions']:
             hostheader = cond.get('HostHeaderConfig')
             if hostheader:
-                hostheaders.append(hostheader['Values'])
+                hostheaders.extend(hostheader['Values'])
     return hostheaders
 

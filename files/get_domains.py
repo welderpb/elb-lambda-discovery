@@ -6,6 +6,7 @@ import json
 TAG     = os.getenv('SKIP_TAG')
 REGIONS = os.getenv('REGIONS')
 TYPES   = os.getenv('TYPES')
+SOURCE  = 'AWS-QA'
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -20,25 +21,36 @@ def handler(event=None, context=None):
     """
     regions = json.loads(REGIONS)
     for region in regions:
-        get_domains(region)
+        albs = get_elb_data(region)
+        prepare_post_data(albs, region)
 
-def get_domains(region):
+def get_elb_data(region):
     """
     Get hostheader conditions from listeners for region.
     :param region:
     :return:
     """
-    listeners = dict()
+    elbs = list()
 
     types = json.loads(TYPES)
     elb_client = aws.get_elb_client(region)
-    albs  = aws.get_load_balancers(elb_client, TAG, types)
+    elbs  = aws.get_load_balancers(elb_client, TAG, types)
+    for index, alb in enumerate(elbs):
+        elbs[index].extend({'listeners': aws.get_listeners(elb_client, alb)})
+        for k, listener in elbs[index]['listeners']:
+            listener.update({"hostheaders": aws.get_hostheaders(elb_client, listener['arn'])})
+            elbs[index]['listeners'][k] = listener
+
+    logging.info(json.dumps(elbs, indent=4))
+    return elbs
+ 
+def prepare_post_data(albs, region):
+    data = dict()
+    data = {data: [], source: SOURCE}
+
     for alb in albs:
-        listeners[alb] = aws.get_listeners(elb_client, alb)
+        for listener in alb['listeners']:
+            for host in listener['hostheaders']:
+                data['data'].append({'fqdn':host, 'namespace': region, port: listener['port']})
 
-    for alb in listeners:
-        for index, listener in enumerate(listeners[alb]):
-            listeners[alb][index] = listener.update({"hostheaders": aws.get_hostheaders(elb_client, listener)})
-
-    logging.info(json.dumps(listeners, indent=4))
-    
+    logging.info(json.dumps(data, indent=4))

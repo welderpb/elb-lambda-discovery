@@ -40,7 +40,7 @@ resource "aws_lambda_function" "attach_lambda_function" {
   environment {
     variables = {
       SKIP_TAG = var.skip_tag
-      Regions  = var.regions
+      REGIONS  = var.regions
     }
   }
 

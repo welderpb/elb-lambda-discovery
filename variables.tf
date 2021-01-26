@@ -28,3 +28,13 @@ variable "types" {
   type        = list(string)
   default     = ["application"]
 }
+
+variable "api_url" {
+  type    = string
+  default = "https://com.com"
+}
+
+variable "source" {
+  type    = string
+  default = "ELB"
+}

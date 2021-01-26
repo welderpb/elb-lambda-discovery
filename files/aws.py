@@ -38,7 +38,7 @@ def get_listeners(elb_client, alb_arn):
     """
     elb_response = elb_client.describe_listeners(LoadBalancerArn=alb_arn)
 
-    listeners = dict()
+    listeners = list()
 
     for l in elb_response.get('Listeners'):
         if l['Protocol'] == 'HTTPS':

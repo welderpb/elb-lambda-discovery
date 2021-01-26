@@ -1,5 +1,5 @@
 resource "aws_iam_role" "lambda_role" {
-  name = "${var.name}-${var.environment}-${var.region}"
+  name = "${var.name}-${var.environment}"
 
   assume_role_policy = <<EOF
 {

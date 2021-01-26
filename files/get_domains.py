@@ -34,7 +34,11 @@ def get_domains(region):
     elb_client = aws.get_elb_client(region)
     albs  = aws.get_load_balancers(elb_client, TAG, types)
     for alb in albs:
-        listeners[alb] = aws.get_listener(elb_client, alb)
+        listeners[alb] = aws.get_listeners(elb_client, alb)
 
-    logging.info(json.dump(listeners, indent=4))
+    for alb in listeners:
+        for index, listener in enumerate(listeners[alb]):
+            listeners[alb][index] = listener.update({"hostheaders": aws.get_hostheaders(elb_client, listener)})
+
+    logging.info(json.dumps(listeners, indent=4))
     

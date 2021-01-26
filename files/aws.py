@@ -8,12 +8,11 @@ def get_elb_client(region='us-east-1'):
 def get_load_balancers(elb_client, skip_tag, types):
     """
     Returns loadbalncer arns for given region.
-    :param region:
+    :param elb_client:
     :param skip_tag:
     :param types:
     :return: list
     """
-    elb_client = boto3.client('elbv2', region)
     elb_response = elb_client.describe_load_balancers()
 
     elb_arns = [] # List to hold the elastic load balancers ARNs
@@ -30,21 +29,37 @@ def get_load_balancers(elb_client, skip_tag, types):
 
     return elb_arns
 
-def get_listener(elb_client, alb_arn):
+def get_listeners(elb_client, alb_arn):
     """
     Returns listeners arns for given loadbalancer.
-    :param region:
+    :param elb_client:
     :param alb_arn:
-    :return: list
+    :return: map
     """
     elb_response = elb_client.describe_listeners(LoadBalancerArn=alb_arn)
 
-    listeners = []
+    listeners = dict()
 
     for l in elb_response.get('Listeners'):
         if l['Protocol'] == 'HTTPS':
-            listeners.append(l['ListenerArn'])
+            listeners.add({l['ListenerArn']: {'Port': l['Port']}})
 
     return listeners
 
+def get_hostheaders(elb_client, listener_arn):
+    """
+    Returns all hostheaders condition for given listener.
+    :param elb_client:
+    :param listener_arn:
+    :return: list
+    """
+    hostheaders = []
+
+    elb_response = elb_client.describe_rules(ListenerArn=listener_arn)
+    for r in elb_response.get('Rules'):
+        for cond in r['Conditions']:
+            hostheader = cond.get('HostHeaderConfig')
+            if hostheader:
+                hostheaders.append(hostheader['Values'])
+    return hostheaders
 

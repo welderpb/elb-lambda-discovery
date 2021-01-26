@@ -1,34 +1,24 @@
 
-variable "asg_name" {
-  description = ""
-  type = string
-}
-
 variable "environment" {
   description = ""
-  type = string
+  type        = string
+  default     = "nonprod"
 }
 
 variable "name" {
   description = ""
-  type = string
+  type        = string
+  default     = "ELBDomainDiscovery"
 }
 
-variable "aws_region" {
-  description = ""
-  type = string
-}
-
-variable "zone_id" {
-  description = ""
-  type = string
-}
-
-variable "cname_tag" {
-  type = string
+variable "skip_tag" {
+  description = "ELB Tag key for skip doscovery"
+  type        = string
+  default     = "SkipDomainDiscovery"
 }
 
 variable "regions" {
-  type = list(string)
-  default = ["us-east-1"]
+  description = "List of regions for Domain Discovery"
+  type        = list(string)
+  default     = ["us-east-1"]
 }

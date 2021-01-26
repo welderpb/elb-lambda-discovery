@@ -1,7 +1,7 @@
 resource "null_resource" "prepare-lambda" {
   triggers = {
-    main         = filebase64sha256("${path.module}/files/get_domains.py")
-    lib          = filebase64sha256("${path.module}/files/aws.py")
+    main = filebase64sha256("${path.module}/files/get_domains.py")
+    lib  = filebase64sha256("${path.module}/files/aws.py")
   }
 
   provisioner "local-exec" {
@@ -28,13 +28,13 @@ data "archive_file" "lambda_zip" {
 }
 
 resource "aws_lambda_function" "attach_lambda_function" {
-  filename      = "${path.module}/output/lambda.zip"
-  function_name = "${var.name}-${var.environment}"
-  role          = aws_iam_role.lambda_role.arn
-  description   = "An AWS Lambda '${var.name}' function for ${var.environment}"
-  handler       = "update_public_info.handler"
-  timeout       = "60"
-  runtime       = "python3.7"
+  filename         = "${path.module}/output/lambda.zip"
+  function_name    = "${var.name}-${var.environment}"
+  role             = aws_iam_role.lambda_role.arn
+  description      = "An AWS Lambda '${var.name}' function for ${var.environment}"
+  handler          = "update_public_info.handler"
+  timeout          = "60"
+  runtime          = "python3.7"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
   environment {

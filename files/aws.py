@@ -1,7 +1,7 @@
 import boto3
 import logging
 
-def get_load_balancers(region='us-east-1', skip_tag, types ):
+def get_load_balancers(region='us-east-1', skip_tag='', types=["application"]):
     """
     Returns instances data for given asg.
     :param region:
@@ -20,7 +20,7 @@ def get_load_balancers(region='us-east-1', skip_tag, types ):
    
     for elb in elb_arns:
         tags = elb_client.describe_tags(ResourceArns=[elb])
-        for tag in tags.get('TagDescriptions')[0].['Tags']
+        for tag in tags.get('TagDescriptions')[0]['Tags']:
             if tag['Key'] == skip_tag:
                 elb_arns.remove(elb)
 

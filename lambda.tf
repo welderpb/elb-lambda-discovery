@@ -41,6 +41,7 @@ resource "aws_lambda_function" "attach_lambda_function" {
     variables = {
       SKIP_TAG = var.skip_tag
       REGIONS  = jsonencode(var.regions)
+      TYPES    = jsonencode(var.types)
     }
   }
 

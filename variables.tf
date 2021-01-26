@@ -22,3 +22,9 @@ variable "regions" {
   type        = list(string)
   default     = ["us-east-1"]
 }
+
+variable "types" {
+  description = "List of types of ELB"
+  type        = list(string)
+  default     = ["application"]
+}

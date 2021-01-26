@@ -10,7 +10,7 @@ def get_load_balancers(region='us-east-1', skip_tag='', types=["application"]):
     :return: map
     """
     elb_client = boto3.client('elbv2', region)
-    elb_response = elb_client.describe_load_balancers().get('LoadBalancers')
+    elb_response = elb_client.describe_load_balancers()
 
     elb_arns = [] # List to hold the elastic load balancers ARNs
 

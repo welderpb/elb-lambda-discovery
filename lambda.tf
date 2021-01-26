@@ -25,6 +25,8 @@ data "archive_file" "lambda_zip" {
   type        = "zip"
   source_dir  = "${path.module}/files"
   output_path = "${path.module}/output/lambda.zip"
+
+  depends_on  = [null_resource.prepare-lambda]
 }
 
 resource "aws_lambda_function" "attach_lambda_function" {

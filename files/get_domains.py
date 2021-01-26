@@ -24,12 +24,17 @@ def handler(event=None, context=None):
 
 def get_domains(region):
     """
-    Get host entries from listeners for region.
+    Get hostheader conditions from listeners for region.
     :param region:
     :return:
     """
-    
+    listeners = dict()
+
     types = json.loads(TYPES)
-    albs  = aws.get_load_balancers(region, TAG, types)
-    logging.info(albs)
+    elb_client = aws.get_elb_client(region)
+    albs  = aws.get_load_balancers(elb_client, TAG, types)
+    for alb in albs:
+        listeners[alb] = aws.get_listener(elb_client, alb)
+
+    logging.info(json.dump(listeners, indent=4))
     

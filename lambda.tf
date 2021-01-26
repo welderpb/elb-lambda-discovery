@@ -32,7 +32,7 @@ resource "aws_lambda_function" "attach_lambda_function" {
   function_name    = "${var.name}-${var.environment}"
   role             = aws_iam_role.lambda_role.arn
   description      = "An AWS Lambda '${var.name}' function for ${var.environment}"
-  handler          = "update_public_info.handler"
+  handler          = "get_domains.handler"
   timeout          = "60"
   runtime          = "python3.7"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
@@ -40,7 +40,7 @@ resource "aws_lambda_function" "attach_lambda_function" {
   environment {
     variables = {
       SKIP_TAG = var.skip_tag
-      REGIONS  = var.regions
+      REGIONS  = jsonencode(var.regions)
     }
   }
 

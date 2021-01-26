@@ -18,7 +18,7 @@ variable "skip_tag" {
 }
 
 variable "regions" {
-  description = "Text list of regions for Domain Discovery"
-  type        = string
+  description = "List of regions for Domain Discovery"
+  type        = list(string)
   default     = ["us-east-1"]
 }

@@ -45,7 +45,7 @@ resource "aws_lambda_function" "attach_lambda_function" {
       REGIONS  = jsonencode(var.regions)
       TYPES    = jsonencode(var.types)
       API_URL  = var.api_url
-      SOURCE   = var.source
+      SOURCE   = var._source
     }
   }
 

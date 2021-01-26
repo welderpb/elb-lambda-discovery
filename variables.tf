@@ -34,7 +34,7 @@ variable "api_url" {
   default = "https://com.com"
 }
 
-variable "source" {
+variable "_source" {
   type    = string
   default = "ELB"
 }

@@ -52,7 +52,7 @@ def get_elb_data(region):
  
 def prepare_post_data(albs, region):
     data = dict()
-    data = {'data': [], 'source': SOURCE}
+    data = {'data': [], 'source': SOURCE+region}
 
     for alb in albs:
         for listener in alb['listeners']:

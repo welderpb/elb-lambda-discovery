@@ -49,7 +49,7 @@ def get_elb_data(region):
 
     #logging.info(json.dumps(elbs, indent=4))
     return elbs
- 
+
 def prepare_post_data(albs, region):
     data = dict()
     data = {'data': [], 'source': SOURCE+region}
@@ -57,7 +57,7 @@ def prepare_post_data(albs, region):
     for alb in albs:
         for listener in alb['listeners']:
             for host in listener['hostheaders']:
-                data['data'].append({'fqdn':host, 'namespace': region, 'port': listener['port']})
+                data['data'].append({'fqdn':host, 'tags': {'port': listener['port'], 'region': region}})
 
     #logging.info(json.dumps(data, indent=4))
     return data

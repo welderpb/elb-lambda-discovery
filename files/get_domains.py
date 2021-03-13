@@ -57,7 +57,10 @@ def prepare_post_data(albs, region):
     for alb in albs:
         for listener in alb['listeners']:
             for host in listener['hostheaders']:
-                data['data'].append({'fqdn':host, 'tags': {'port': str(listener['port']), 'region': region}})
+                data['data'].append({'fqdn':host,
+                                     'gateID: '6fff0855-803f-411e-be48-d78a69b82477',
+                                     'tags': {'port': str(listener['port']),
+                                     'region': region}})
 
     #logging.info(json.dumps(data, indent=4))
     return data

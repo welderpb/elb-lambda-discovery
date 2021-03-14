@@ -9,6 +9,7 @@ REGIONS = os.getenv('REGIONS')
 TYPES   = os.getenv('TYPES')
 API_URL = os.getenv('API_URL')
 SOURCE  = os.getenv('SOURCE')
+GATEID  = os.getenv('GATEID')
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -50,6 +51,19 @@ def get_elb_data(region):
     #logging.info(json.dumps(elbs, indent=4))
     return elbs
 
+def keep_first(iterable, key=None):
+    if key is None:
+        key = lambda x: x
+
+    seen = set()
+    for elem in iterable:
+        k = key(elem)
+        if k in seen:
+            continue
+
+        yield elem
+        seen.add(k)
+
 def prepare_post_data(albs, region):
     data = dict()
     data = {'data': [], 'source': SOURCE+region}
@@ -58,9 +72,11 @@ def prepare_post_data(albs, region):
         for listener in alb['listeners']:
             for host in listener['hostheaders']:
                 data['data'].append({'fqdn':host,
-                                     'gateID: '6fff0855-803f-411e-be48-d78a69b82477',
+                                     'gateID': GATEID,
                                      'tags': {'port': str(listener['port']),
                                      'region': region}})
 
+    #remove dublcates by fqdn
+    data = keep_first(data, lambda d: (d['fqdn']))
     #logging.info(json.dumps(data, indent=4))
     return data

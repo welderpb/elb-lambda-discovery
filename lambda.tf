@@ -46,6 +46,7 @@ resource "aws_lambda_function" "attach_lambda_function" {
       TYPES    = jsonencode(var.types)
       API_URL  = var.api_url
       SOURCE   = var._source
+      GATEID   = var.gateid
     }
   }
 

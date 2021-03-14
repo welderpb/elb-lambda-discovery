@@ -72,11 +72,14 @@ def prepare_post_data(albs, region):
         for listener in alb['listeners']:
             for host in listener['hostheaders']:
                 data['data'].append({'fqdn':host,
-                                     'gateID': GATEID,
-                                     'tags': {'port': str(listener['port']),
-                                     'region': region}})
+                                     'tags': {
+                                               'port': str(listener['port']),
+                                               'region': region,
+                                               'gate': GATEID
+                                            }
+                                    })
 
     #remove dublcates by fqdn
-    data = keep_first(data, lambda d: (d['fqdn']))
+    data['data'] = list(keep_first(data['data'], lambda d: d['fqdn']))
     #logging.info(json.dumps(data, indent=4))
     return data

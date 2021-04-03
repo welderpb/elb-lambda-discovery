@@ -80,6 +80,6 @@ def prepare_post_data(albs, region):
                                     })
 
     #remove dublcates by fqdn
-    data['data'] = list(keep_first(data['data'], lambda d: d['fqdn']))
+    #data['data'] = list(keep_first(data['data'], lambda d: d['fqdn']))
     #logging.info(json.dumps(data, indent=4))
     return data
